@@ -42,6 +42,7 @@ import {
 	REVIEW_ACTIONS_PROTOCOL_VERSION,
 	REVIEW_RICH_ANCHORS_PROTOCOL_VERSION,
 	readToolResponseMessage,
+	SEARCH_PROTOCOL_VERSION,
 	SESSION_RENAME_PROTOCOL_VERSION,
 	SESSION_STATE_PROTOCOL_VERSION,
 	SESSION_TITLE_MAX_LENGTH,
@@ -252,6 +253,13 @@ test("client error reports are pinned to v90", () => {
 	expect(WS_METHODS.clientReportError).toBe("client.reportError");
 });
 
+test("host search and its previews are pinned to v96", () => {
+	expect(PROTOCOL_VERSION).toBe(96);
+	expect(SEARCH_PROTOCOL_VERSION).toBe(96);
+	expect(WS_METHODS.searchQuery).toBe("search.query");
+	expect(WS_METHODS.searchPreview).toBe("search.preview");
+});
+
 test("project rename is pinned to v85", () => {
 	expect(PROTOCOL_VERSION).toBeGreaterThanOrEqual(PROJECT_RENAME_PROTOCOL_VERSION);
 	expect(PROJECT_RENAME_PROTOCOL_VERSION).toBe(85);
@@ -277,7 +285,7 @@ test("review details and the GitHub review actions are pinned to v88", () => {
 });
 
 test("project create and the onboarding dismissal are pinned to v94", () => {
-	expect(PROTOCOL_VERSION).toBe(95);
+	expect(PROTOCOL_VERSION).toBeGreaterThanOrEqual(ONBOARDING_PROTOCOL_VERSION);
 	expect(ONBOARDING_PROTOCOL_VERSION).toBe(94);
 	expect(WS_METHODS.projectCreate).toBe("project.create");
 	expect(WS_METHODS.providerDetect).toBe("provider.detect");
