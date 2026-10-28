@@ -87,7 +87,10 @@ import {
 	buildResourceLoader,
 	disabledExtensions,
 	loadsDisabledExtensionSkills,
+	SPEC_TOOL_PREFIX,
+	specsEnabledFor,
 	toSkillCommands,
+	withoutSpecRule,
 } from "./extensions";
 import {
 	createMcpSessionHost,
@@ -743,6 +746,13 @@ export function refreshAgentReviewTool(workspaceId?: string): void {
 	}
 }
 
+function applySpecTools(entry: Entry): void {
+	if (specsEnabledFor(entry.workspaceId)) return;
+	const active = entry.session.getActiveToolNames();
+	const kept = active.filter((name) => !name.startsWith(SPEC_TOOL_PREFIX));
+	if (kept.length !== active.length) entry.session.setActiveToolsByName(kept);
+}
+
 function applyExtensionTools(entry: Entry, { allowReload = true } = {}): void {
 	entry.extensionToolsRefreshPending = false;
 	const { session } = entry;
@@ -964,6 +974,7 @@ function runGatedReload(entry: Entry): Promise<void> {
 				entry.reloadRunning = null;
 				applySubagentTools(entry);
 				applyReviewTool(entry);
+				applySpecTools(entry);
 				applyExtensionTools(entry, {
 					allowReload: entry.reloadPolicyGeneration !== extensionPolicy.generation,
 				});
@@ -1342,6 +1353,7 @@ async function registerSession(
 		preparingEntries.delete(session.sessionId);
 	applySubagentTools(prepared.entry);
 	applyReviewTool(prepared.entry);
+	applySpecTools(prepared.entry);
 	activateRegistryTools(prepared.entry);
 	applyExtensionTools(prepared.entry);
 	restartMcpStatus(session.sessionId);
@@ -1478,6 +1490,7 @@ async function createParentSessionInternal(
 					subagents.extension,
 					createBackgroundCommandsExtension({ service: commands }),
 					...mcpHost.extensions,
+					withoutSpecRule(workspaceId),
 				],
 				toolResponseSessionServices(toolResponseWaiters),
 			),
