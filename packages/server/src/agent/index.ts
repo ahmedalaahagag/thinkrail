@@ -13,6 +13,7 @@ export {
 	refreshSubagentConcurrency,
 	runReviewSubagent,
 	setSubagentConcurrencyResolver,
+	trashWorkspaceDelegation,
 } from "./delegation";
 export {
 	type BundledExtensionFactory,
