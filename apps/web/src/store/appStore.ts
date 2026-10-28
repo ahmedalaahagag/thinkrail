@@ -1044,6 +1044,7 @@ interface AppState {
 	interviewPromptOpen: boolean;
 	notificationPromptOpen: boolean;
 	searchOpen: boolean;
+	searchSession: number;
 	doubleShiftSearch: boolean;
 	theme: ThemeId;
 	themeMode: ThemeMode;
@@ -2312,6 +2313,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 	interviewPromptOpen: false,
 	notificationPromptOpen: false,
 	searchOpen: false,
+	searchSession: 0,
 	doubleShiftSearch: true,
 	theme: DEFAULT_CONFIG.theme,
 	themeMode: DEFAULT_CONFIG.themeMode,
@@ -4335,7 +4337,7 @@ export const useAppStore = create<AppState>((set, get) => ({
 	openNotificationPrompt: () =>
 		set((state) => (state.notificationPromptOpen ? state : { notificationPromptOpen: true })),
 	closeNotificationPrompt: () => set({ notificationPromptOpen: false }),
-	openSearch: () => set((state) => (state.searchOpen ? state : { searchOpen: true })),
+	openSearch: () => set((state) => ({ searchOpen: true, searchSession: state.searchSession + 1 })),
 	closeSearch: () => set((state) => (state.searchOpen ? { searchOpen: false } : state)),
 	setDoubleShiftSearch: (doubleShiftSearch) =>
 		set((state) => (state.doubleShiftSearch === doubleShiftSearch ? state : { doubleShiftSearch })),
